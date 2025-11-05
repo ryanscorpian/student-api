@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+  <head><title>Student List</title></head>
+  <body>
+    <h1>Students</h1>
+    <ul>
+      {% for student in students %}
+      <li>{{ student.roll_no }} - {{ student.name }} - {{ student.student_class }}</li>
+      {% endfor %}
+    </ul>
+  </body>
+</html>
