@@ -1,45 +1,34 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, HTTPException
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
-from pydantic import BaseModel
-from sqlmodel import SQLModel, Session, select, create_engine, Field
-from typing import Optional
+from sqlmodel import SQLModel, Session, select, create_engine
+from models import Student, StudentUpdate  # ✅ Import models from separate file
+from fastapi import Form
+from fastapi.responses import RedirectResponse
 
+# Initialize templates
 templates = Jinja2Templates(directory="templates")
 
-#Database setup
-
-DATABASE_URL = "sqlite:///./students.db"  # SQLite file
+# Database setup
+DATABASE_URL = "sqlite:///./students.db"
 engine = create_engine(DATABASE_URL, echo=True)
 
-#student model
-
-class Student(SQLModel,table = True):
-    roll_no : Optional[int] = Field(default = None , primary_key=True )
-    name : str = Field(...,max_length =50)
-    age : int = Field(...,le = 99)
-    student_class : str = Field(...,max_length=50)
-
-class StudentUpdate(BaseModel):
-    name: Optional[str] = None
-    age: Optional[int] = None
-    student_class: Optional[str] = None
-
- # Create the table in the database
-
-SQLModel.metadata.create_all(engine)   
+# Create DB tables
+SQLModel.metadata.create_all(engine)
 
 # FastAPI app
+app = FastAPI(title="Student API")
 
-app = FastAPI(title="student API")
 
-@app.post("/student/",response_model=Student)
+
+@app.post("/student/", response_model=Student)
 def create_student(student: Student):
-    with Session(engine)as session:
+    with Session(engine) as session:
         session.add(student)
         session.commit()
-        session.refresh(student) # get auto-generated roll_no
+        session.refresh(student)
         return student
+
 
 @app.get("/student/", response_model=list[Student])
 def read_student():
@@ -48,77 +37,44 @@ def read_student():
         students = session.exec(statement).all()
         return students
 
-@app.get("/student/{roll_no}", response_model=str)
+
+@app.get("/student/{roll_no}", response_model=Student)
 def get_student(roll_no: int):
     with Session(engine) as session:
         statement = select(Student).where(Student.roll_no == roll_no)
-        student = session.exec(statement).first()
-        if not student:
-         raise HTTPException(status_code=404, detail="Student not found")
-        return  student
-
-@app.patch("/student/{roll_no}", response_model=Student)
-def update_student(roll_no : int , updates : StudentUpdate):
-     with Session(engine) as session:
-        statement = select(Student).where(Student.roll_no == roll_no)
-        student = session.exec(statement).first()
-        
+        student = session.exec(statement).first()  # fixed
         if not student:
             raise HTTPException(status_code=404, detail="Student not found")
+        return student
+    
 
-        for key,value in updates.dict(exclude_unset=True).items():
-            setattr(student,key,value)
+@app.get("/", response_class=HTMLResponse)
+def root(request: Request):
+    with Session(engine) as session:
+        students = session.exec(select(Student)).all()
+    return templates.TemplateResponse("students.html", {"request": request, "students": students})
 
+
+@app.post("/student/form")
+def create_student_form(
+    name: str = Form(...),
+    age: int = Form(...),
+    student_class: str = Form(...)
+):
+    student = Student(name=name, age=age, student_class=student_class)
+    with Session(engine) as session:
         session.add(student)
         session.commit()
         session.refresh(student)
-        return student
+    return RedirectResponse(url="/", status_code=303)
 
-@app.delete("/student/{roll_no}")
-def delete_student(roll_no: str):
+@app.get("/student/delete/{roll_no}")
+def delete_student(roll_no: int):
     with Session(engine) as session:
-        statement = select(Student).where(Student.roll_no == roll_no)
-        student = session.exec(statement).first()
+        student = session.get(Student, roll_no)
         if not student:
             raise HTTPException(status_code=404, detail="Student not found")
-    
         session.delete(student)
         session.commit()
-        return {"message": f"Student with roll no {roll_no} deleted successfully"}
-    
-@app.get("/", response_class=HTMLResponse)
-def home(request: Request):
-    print("➡️ Home route called")  # Add this line
-    with Session(engine) as session:
-        students = session.exec(select(Student)).all()
-    return templates.TemplateResponse("index.html", {"request": request, "students": students})
-
-
-
-
-
-
-
-
-    
-           
-    
-
-
-
-    
-
-     
-
-
-
-
-
-
-
-
-
-
-
-    
+    return RedirectResponse(url="/", status_code=303)
 
