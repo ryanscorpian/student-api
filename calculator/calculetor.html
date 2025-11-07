@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart Calculator</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="calculator-wrapper">
+    <div class="calculator">
+      <h2>Smart Calculator</h2>
+      <input type="text" id="display" class="input" readonly />
+      <div class="buttons">
+        <button class="button action">C</button>
+        <button class="button action">DEL</button>
+        <button class="button op">%</button>
+        <button class="button op">/</button>
+
+        <button class="button num">7</button>
+        <button class="button num">8</button>
+        <button class="button num">9</button>
+        <button class="button op">*</button>
+
+        <button class="button num">4</button>
+        <button class="button num">5</button>
+        <button class="button num">6</button>
+        <button class="button op">-</button>
+
+        <button class="button num">1</button>
+        <button class="button num">2</button>
+        <button class="button num">3</button>
+        <button class="button op">+</button>
+
+        <button class="button num">0</button>
+        <button class="button num">.</button>
+        <button class="button sci">√</button>
+        <button class="button sci">x²</button>
+
+        <button class="button sci">1/x</button>
+        <button class="button equal">=</button>
+      </div>
+    </div>
+
+    <!-- History Panel -->
+    <div class="history">
+      <h3>History</h3>
+      <ul id="history-list"></ul>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

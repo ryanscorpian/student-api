@@ -1,0 +1,121 @@
+/* Overall background */
+body {
+  margin: 0;
+  font-family: "Poppins", sans-serif;
+  background: linear-gradient(135deg, #1d2671, #c33764);
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Layout */
+.calculator-wrapper {
+  display: flex;
+  gap: 30px;
+  color: white;
+}
+
+/* Calculator box */
+.calculator {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(12px);
+  border-radius: 20px;
+  padding: 25px;
+  width: 280px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+  text-align: center;
+}
+
+h2 {
+  margin-bottom: 15px;
+  font-size: 24px;
+  color: #fff;
+}
+
+.input {
+  width: 90%;
+  height: 45px;
+  text-align: right;
+  font-size: 20px;
+  margin-bottom: 15px;
+  border: none;
+  border-radius: 10px;
+  padding-right: 10px;
+  background-color: rgba(255, 255, 255, 0.3);
+  color: #fff;
+}
+
+/* Buttons grid */
+.buttons {
+  display: grid;
+  grid-template-columns: repeat(4, 60px);
+  gap: 10px;
+  justify-content: center;
+}
+
+.button {
+  height: 50px;
+  border-radius: 12px;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  transition: 0.25s;
+  background: rgba(255, 255, 255, 0.25);
+  color: #fff;
+  font-weight: 600;
+}
+
+.button:hover {
+  background: #2196f3;
+  transform: scale(1.1);
+}
+
+.button.op {
+  background: #ffb300;
+}
+
+.button.action {
+  background: #e53935;
+}
+
+.button.sci {
+  background: #43a047;
+}
+
+.button.equal {
+  background: #8e24aa;
+  grid-column: span 2;
+}
+
+/* History panel */
+.history {
+  width: 180px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  border-radius: 15px;
+  padding: 15px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+}
+
+.history h3 {
+  text-align: center;
+  margin-top: 0;
+  font-size: 20px;
+}
+
+#history-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+#history-list li {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 5px 8px;
+  margin-bottom: 6px;
+  border-radius: 6px;
+  font-size: 16px;
+}
